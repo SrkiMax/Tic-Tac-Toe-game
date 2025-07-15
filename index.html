@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="bootstrap-5.3.5-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- New game menu start -->
+  <section class="new-game-menu container-fluid">
+    <div class="logo-wrapper">
+      <img src="assets/logo.svg" alt="Tic Tac Toe logo">
+    </div>
+
+    <div class="pick-mark-wrapper">
+      <p class="pick-player-text heading-XS">PICK PLAYER 1'S MARK</p>
+      <div class="pick-mark">
+        <div class="x-mark">
+          <!-- <img src="assets/icon-x-outline.svg" alt=""> -->
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M51.12 1.269c.511 0 1.023.195 1.414.586l9.611 9.611c.391.391.586.903.586 1.415s-.195 1.023-.586 1.414L44.441 32l17.704 17.705c.391.39.586.902.586 1.414 0 .512-.195 1.024-.586 1.415l-9.611 9.611c-.391.391-.903.586-1.415.586a1.994 1.994 0 0 1-1.414-.586L32 44.441 14.295 62.145c-.39.391-.902.586-1.414.586a1.994 1.994 0 0 1-1.415-.586l-9.611-9.611a1.994 1.994 0 0 1-.586-1.415c0-.512.195-1.023.586-1.414L19.559 32 1.855 14.295a1.994 1.994 0 0 1-.586-1.414c0-.512.195-1.024.586-1.415l9.611-9.611c.391-.391.903-.586 1.415-.586s1.023.195 1.414.586L32 19.559 49.705 1.855c.39-.391.902-.586 1.414-.586Z"
+              stroke="" stroke-width="2" fill="currentColor" />
+          </svg>
+        </div>
+
+        <div class="o-mark active">
+          <!-- <img src="assets/icon-o-outline.svg" alt=""> -->
+          <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M33 1c17.673 0 32 14.327 32 32 0 17.673-14.327 32-32 32C15.327 65 1 50.673 1 33 1 15.327 15.327 1 33 1Zm0 18.963c-7.2 0-13.037 5.837-13.037 13.037 0 7.2 5.837 13.037 13.037 13.037 7.2 0 13.037-5.837 13.037-13.037 0-7.2-5.837-13.037-13.037-13.037Z"
+              stroke="" stroke-width="2" fill="currentColor" />
+          </svg>
+        </div>
+      </div>
+      <p class="remember-text">REMEMBER: X GOES FIRST</p>
+    </div>
+    <div class="buttons-wrapper">
+      <button type="button" class="btn btn-vs-cpu heading-S">NEW GAME (VS CPU)</button>
+      <button type="button" class="btn btn-vs-player heading-S">NEW GAME (VS PLAYER)</button>
+    </div>
+
+  </section>
+  <!-- New game menu end -->
+
+
+  <!-- Game board start -->
+  <section class="game-start container-fluid">
+    <div class="upper-buttons">
+
+      <div class="game-start-logo-wrapper">
+        <img src="assets/logo.svg" alt="Tic Tac toe logo">
+      </div>
+
+      <div class="turn heading-XS">
+        <span class="X-or-Y-turn">
+          <svg id="turn-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <path id="turn-icon-path"
+              d="M51.12 1.269c.511 0 1.023.195 1.414.586l9.611 9.611c.391.391.586.903.586 1.415s-.195 1.023-.586 1.414L44.441 32l17.704 17.705c.391.39.586.902.586 1.414 0 .512-.195 1.024-.586 1.415l-9.611 9.611c-.391.391-.903.586-1.415.586a1.994 1.994 0 0 1-1.414-.586L32 44.441 14.295 62.145c-.39.391-.902.586-1.414.586a1.994 1.994 0 0 1-1.415-.586l-9.611-9.611a1.994 1.994 0 0 1-.586-1.415c0-.512.195-1.023.586-1.414L19.559 32 1.855 14.295a1.994 1.994 0 0 1-.586-1.414c0-.512.195-1.024.586-1.415l9.611-9.611c.391-.391.903-.586 1.415-.586s1.023.195 1.414.586L32 19.559 49.705 1.855c.39-.391.902-.586 1.414-.586Z"
+              stroke="" stroke-width="2" fill="currentColor" />
+          </svg>
+        </span> TURN
+      </div>
+
+      <button type="button" class="btn btn-restart heading-S">
+        <img src="assets/icon-restart.svg" alt="restart icon">
+      </button>
+
+    </div>
+
+    <div class="board">
+      <div class="field"></div>
+      <div class="field"></div>
+      <div class="field"></div>
+      <div class="field"></div>
+      <div class="field"></div>
+      <div class="field"></div>
+      <div class="field"></div>
+      <div class="field"></div>
+      <div class="field"></div>
+    </div>
+
+    <div class="scores">
+      <div class="score-wrapper green-player">
+        <div>X <span>(YOU)</span></div>
+        <span class="score green-score">14</span>
+
+      </div>
+      <div class="score-wrapper ties">
+        <div>TIES</div>
+        <span class="score ties-score">32</span>
+      </div>
+      <div class="score-wrapper yellow-player">
+        <div>O <span>(CPU)</span></div>
+        <span class="score yellow-score">11</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Game board end -->
+
+
+  Pick player 1's mark
+  Remember: X goes first
+
+  New Game (vs CPU)
+  New Game (vs player)
+
+  <!-- New game menu end -->
+
+  <!-- Game board start -->
+
+  <!-- x/o icon --> turn
+
+  X (You) <!-- Your score -->
+  Ties <!-- Ties score -->
+  X (CPU) <!-- CPU score -->
+
+  Oh no, you lost
+  You won!
+  Player <!-- 1/2 --> wins!
+
+  <!-- x/o icon --> takes the round
+  Round tied
+  Restart game?
+
+  Quit
+  Next round
+  No, cancel
+  Yes, restart
+
+  <!-- Game board end -->
+
+  <div class="overlay-restart hidden" id="restart-confirm">
+    <div class="overlay-box-restart">
+      <p class="overlay-title-restart heading-L">RESTART GAME?</p>
+      <div class="overlay-btn-group-restart">
+        <button class="btn btn-cancel heading-XS">NO, CANCEL</button>
+        <button class="btn btn-confirm-restart heading-XS">YES, RESTART</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay-win">
+    <div class="overlay-box-win">
+      <p class="overlay-title-win heading-XS">YOU WON</p>
+      <div class="takes-the-round-wrapper win-text heading-L">
+        <img src="assets/icon-x.svg" alt="X or O mark icon" class="mark-icon">
+        <p class="takes-the-round-text">TAKES THE ROUND</p>
+      </div>
+      <div class="overlay-btn-group-win">
+        <button class="btn btn-quit heading-XS">QUIT</button>
+        <button class="btn btn-next-round heading-XS">NEXT ROUND</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="bootstrap-5.3.5-dist/js/bootstrap.min.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
