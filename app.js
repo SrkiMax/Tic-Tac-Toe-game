@@ -90,14 +90,30 @@ btnO.addEventListener("click", () => {
 function startGame(vsCpu) {
     isVsCpu = vsCpu;
 
-    currentTurn = "x";
-    board.classList.add("x-hover");
-    board.classList.remove("o-hover");
+    currentTurn = "x"; // Always start with X
+
+
+    // board.classList.add("x-hover", currentTurn === "x");
+    // board.classList.remove("o-hover", currentTurn === "o");
+
+    board.classList.toggle("x-hover", currentTurn === "x");
+    board.classList.toggle("o-hover", currentTurn === "o");
+
+
+
+    turnIconPath.setAttribute("d", xPathD); // Start icon is always X
 
     newGameMenu.style.display = "none";
     gameStartScreen.style.display = "flex";
 
     updateScoreLabels();
+
+    if (isVsCpu && markSelected !== "x") {
+        // User is O, CPU starts first
+        setTimeout(cpuMove, 500);
+    }
+
+
 };
 
 // Clear the board
@@ -186,28 +202,22 @@ function toggleTurn() {
 
 
 // Marking the fields
-document.querySelectorAll(".field").forEach(field => {
+fields.forEach(field => {
     field.addEventListener("click", () => {
+        if (field.classList.contains("marked")) return;
 
-        if (field.classList.contains("marked")) {
-            return;
-        }
-        if (currentTurn === "x") {
+        if (isVsCpu && currentTurn !== markSelected) return;
 
-            field.classList.add("marked-X");
-            field.classList.remove("marked-O");
-        } else {
+        // Mark the field for currentTurn
+        field.classList.add("marked", currentTurn === "x" ? "marked-X" : "marked-O");
 
-            field.classList.add("marked-O");
-            field.classList.remove("marked-X");
-        }
-
-        field.classList.add("marked");
-
-        toggleTurn(); // switch turn after valid move
         checkWin();
+        toggleTurn();
 
-
+        // If CPU's turn next
+        if (isVsCpu && currentTurn !== markSelected) {
+            setTimeout(cpuMove, 500);
+        }
     });
 });
 
@@ -257,12 +267,7 @@ function checkWin() {
     if (isTie) {
         tiesCounter++;
         tiesScore.textContent = tiesCounter;
-        setTimeout(() => {
-            winOverlay.style.display = "flex";
-            document.querySelector(".overlay-title-win").textContent = "ROUND TIED";
-            document.querySelector(".mark-icon").src = "";
-            document.querySelector(".takes-the-round-text").textContent = "";
-        }, 500)
+        setTimeout(showTieOverlay, 500);
     }
 
 
@@ -305,10 +310,16 @@ function updateScore(winner) {
 
 function showWinOverlay(winner) {
     winOverlay.style.display = "flex";
+
+    const winMessage = document.querySelector(".win-message");
+    const tieMessage = document.querySelector(".tie-message");
     const text = document.querySelector(".overlay-title-win");
     const icon = document.querySelector(".mark-icon");
     const colorText = document.querySelector(".takes-the-round-text");
 
+    // Show win message, hide tie
+    winMessage.classList.remove("hidden");
+    tieMessage.classList.add("hidden");
 
     // Update icon and color
     icon.src = winner === "x" ? "assets/icon-x.svg" : "assets/icon-o.svg";
@@ -329,6 +340,17 @@ function showWinOverlay(winner) {
 
 }
 
+
+function showTieOverlay() {
+    winOverlay.style.display = "flex";
+
+    const winMessage = document.querySelector(".win-message");
+    const tieMessage = document.querySelector(".tie-message");
+
+    // Hide win, show tie
+    winMessage.classList.add("hidden");
+    tieMessage.classList.remove("hidden");
+}
 
 
 
@@ -366,17 +388,60 @@ function resetScore() {
 function nextRound() {
     clearBoard();
 
-    // Reset turn to X
-    currentTurn = "x";
-    board.classList.add("x-hover");
-    board.classList.remove("o-hover");
+    currentTurn = "x"; // Always start with X
+    board.classList.toggle("x-hover", currentTurn === "x");
+    board.classList.toggle("o-hover", currentTurn === "o");
     turnIconPath.setAttribute("d", xPathD);
 
     winOverlay.style.display = "none";
+
+    if (isVsCpu && markSelected !== "x") {
+        setTimeout(cpuMove, 500);
+    }
 
 };
 
 
 btnNextRound.addEventListener("click", nextRound);
+
+
+// If user choses to play VS CPU
+
+function getCpuMark() {
+    return markSelected === "x" ? "o" : "x";
+}
+
+
+function cpuMove() {
+    const availableFields = [...fields].filter((field) => !field.classList.contains("marked"));
+    if (availableFields.length === 0) return;
+
+    const cpuMark = getCpuMark();
+
+
+    const randomIndex = Math.floor(Math.random() * availableFields.length);
+    const field = availableFields[randomIndex];
+
+    field.classList.add("marked");
+
+    field.classList.add(cpuMark === "x" ? "marked-X" : "marked-O");
+
+    // currentTurn = cpuMark;
+
+    toggleTurn();
+    checkWin();
+}
+
+
+
+
+// Keyboard play
+fields.forEach(field => {
+    field.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            field.click();
+        }
+    });
+});
 
 
