@@ -541,6 +541,10 @@ body {
     color: var(--Light-Blue);
 }
 
+.overlay-title-tie {
+    color: var(--Silver);
+}
+
 .overlay-btn-group-win {
     display: flex;
     gap: 1rem;
@@ -573,7 +577,53 @@ body {
 
 
 
+@media(max-width: 585px) {
 
+    .takes-the-round-wrapper {
+        gap: 0.75rem;
+    }
+
+    .takes-the-round-wrapper img {
+        max-width: 30px;
+        max-height: 30px;
+    }
+
+    .takes-the-round-text {
+        font-size: 24px;
+        letter-spacing: 1.5px;
+    }
+
+    .overlay-title-tie {
+        font-size: 24px;
+        letter-spacing: 1.5px;
+
+    }
+
+    .overlay-box-win {
+        padding-top: 3.5rem;
+    }
+
+    .overlay-title-restart {
+        font-size: 24px;
+        letter-spacing: 1.5px;
+    }
+
+    .btn-cancel {
+
+        padding: 0 0.5rem;
+
+    }
+
+    .overlay-box-restart {
+        padding-top: 5rem;
+    }
+
+
+    .btn-confirm-restart {
+        padding: 0 0.5rem;
+    }
+
+}
 
 
 
@@ -639,6 +689,11 @@ body {
     }
 
 
+    .takes-the-round-text {
+        font-size: 20px;
+        letter-spacing: 1.5px;
+    }
+
     .scores {
         max-width: 328px;
 
@@ -648,7 +703,6 @@ body {
     .score-wrapper {
 
         height: 64px;
-
         /* width: 96px; */
 
     }
@@ -668,7 +722,6 @@ body {
 
     .upper-buttons {
         max-width: 300px;
-
     }
 
 
@@ -679,7 +732,6 @@ body {
     }
 
     .field {
-
         margin-top: 2px;
     }
 
