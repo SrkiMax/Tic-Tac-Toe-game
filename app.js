@@ -1,5 +1,6 @@
 
 let isVsCpu = true;
+let gameOver = false;
 
 const btnX = document.querySelector(".x-mark");
 const btnO = document.querySelector(".o-mark");
@@ -33,14 +34,7 @@ const fields = document.querySelectorAll(".field");
 
 fields.forEach(field => field.setAttribute("tabindex", "0"));
 
-// Call this function after each move
-// Example: player clicks a field
-// document.querySelectorAll('.field').forEach(field => {
-//     field.addEventListener('click', () => {
-//         // Your logic to mark the cell, etc.
-//         toggleTurn(); // switch turn after valid move
-//     });
-// });
+
 
 
 const greenPlayerText = document.querySelector(".green-player span");
@@ -166,18 +160,28 @@ btnCancel.addEventListener("click", () => {
     restartOverlay.classList.add("hidden");
 });
 
+
 btnConfirmRestart.addEventListener("click", () => {
     restartOverlay.classList.add("hidden");
 
     // Clear the board
 
     clearBoard();
+    // Enable clicking again
+    fields.forEach(field => field.style.pointerEvents = "auto");
+
+    gameOver = false; // Reset game
 
     // Reset turn to X
     currentTurn = "x";
     board.classList.add("x-hover");
     board.classList.remove("o-hover");
     turnIconPath.setAttribute("d", xPathD);
+
+    // Let CPU move first if player is O
+    if (isVsCpu && markSelected !== "x") {
+        setTimeout(cpuMove, 500);
+    }
 });
 
 
@@ -239,12 +243,16 @@ function checkWin() {
             fields[c].classList.contains("marked-X")
 
         ) {
+            gameOver = true;
             highlightWin(combo);
             updateScore("x");
 
             setTimeout(() => {
                 showWinOverlay("x");
             }, 500);
+
+            // Disable input
+            fields.forEach(field => field.style.pointerEvents = "none");
             return;
 
         }
@@ -253,22 +261,34 @@ function checkWin() {
             fields[b].classList.contains("marked-O") &&
             fields[c].classList.contains("marked-O")
         ) {
+            gameOver = true;
             highlightWin(combo);
             updateScore("o");
 
             setTimeout(() => {
                 showWinOverlay("o");
             }, 500);
+
+            // Disable input
+            fields.forEach(field => field.style.pointerEvents = "none");
             return;
         }
     }
 
     const isTie = [...fields].every(field => field.classList.contains("marked"));
+
     if (isTie) {
+        gameOver = true;
         tiesCounter++;
         tiesScore.textContent = tiesCounter;
         setTimeout(showTieOverlay, 500);
+
+        // Disable input after game ends
+        fields.forEach(field => field.style.pointerEvents = "none");
+        return;
     }
+
+
 
 
 };
@@ -358,6 +378,9 @@ function showTieOverlay() {
 
 function quitGame() {
     clearBoard();
+    // Enable clicking again
+    fields.forEach(field => field.style.pointerEvents = "auto");
+    gameOver = false;
     resetScore();
     newGameMenu.style.display = "flex";
     gameStartScreen.style.display = "none";
@@ -387,6 +410,10 @@ function resetScore() {
 
 function nextRound() {
     clearBoard();
+    // Enable clicking again
+    fields.forEach(field => field.style.pointerEvents = "auto");
+
+    gameOver = false; //Reset
 
     currentTurn = "x"; // Always start with X
     board.classList.toggle("x-hover", currentTurn === "x");
@@ -413,10 +440,58 @@ function getCpuMark() {
 
 
 function cpuMove() {
-    const availableFields = [...fields].filter((field) => !field.classList.contains("marked"));
-    if (availableFields.length === 0) return;
+    if (gameOver) return; // Prevent CPU from playing after game ends
+
+
 
     const cpuMark = getCpuMark();
+    const cpuClass = cpuMark === "x" ? "marked-X" : "marked-O";
+    const playerClass = markSelected === "x" ? "marked-X" : "marked-O";
+
+
+
+    // Here making AI CPU that would block the user from winning 3 fields or try winning itself
+
+    for (const combo of winCombos) {
+
+        let cpuCount = 0;
+        let playerCount = 0;
+        let emptyIndex = -1;
+
+        for (let i = 0; i < 3; i++) {
+            const index = combo[i];
+            const cell = fields[index];
+
+            if (cell.classList.contains(cpuClass)) {
+                cpuCount++;
+            } else if (cell.classList.contains(playerClass)) {
+                playerCount++;
+            } else if (!cell.classList.contains("marked")) {
+                emptyIndex = index; //If it's empty, we remember that index (only one will be empty if someone is about to win or block).
+
+            }
+
+        }
+        //  Try to win
+        if (cpuCount === 2 && emptyIndex !== -1) {
+            fields[emptyIndex].classList.add("marked", cpuClass);
+            toggleTurn();
+            checkWin();
+            return;
+        }
+
+        // Try to block
+        if (playerCount === 2 && emptyIndex !== -1) {
+            fields[emptyIndex].classList.add("marked", cpuClass);
+            toggleTurn();
+            checkWin();
+            return;
+        }
+
+    }
+
+    const availableFields = [...fields].filter((field) => !field.classList.contains("marked"));
+    if (availableFields.length === 0) return;
 
 
     const randomIndex = Math.floor(Math.random() * availableFields.length);
@@ -426,7 +501,6 @@ function cpuMove() {
 
     field.classList.add(cpuMark === "x" ? "marked-X" : "marked-O");
 
-    // currentTurn = cpuMark;
 
     toggleTurn();
     checkWin();
