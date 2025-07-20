@@ -338,7 +338,7 @@ body {
 /* Disable hover outline on marked fields */
 
 .field.marked:hover {
-    cursor: default;
+    cursor: not-allowed;
 }
 
 
