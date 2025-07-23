@@ -110,51 +110,46 @@ body {
     border-radius: 1rem;
 }
 
-.x-mark,
-.o-mark {
-    display: flex;
-    justify-content: center;
+.pick-mark button {
+    background: none;
+    border: none;
+
     padding: 0.7rem;
-}
-
-.x-mark {
-
-    border-radius: 0.75rem;
-    transition: 0.3s ease;
-}
-
-.o-mark {
-    /* background-color: var(--Silver); */
-    border-radius: 0.75rem;
-    transition: 0.3s ease;
-
-}
-
-
-
-.x-mark:hover {
-    background-color: #21313B;
+    margin: 0;
     cursor: pointer;
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    transition: 0.3s ease;
+
+
 }
 
+
+
+
+.x-mark:hover,
 .o-mark:hover {
     background-color: #21313B;
     cursor: pointer;
 }
 
 
-.x-mark svg {
-    width: 32px;
-    height: 32px;
-    color: var(--Silver);
-}
 
+
+.x-mark svg,
 .o-mark svg {
     width: 32px;
     height: 32px;
     color: var(--Silver);
-
 }
+
+
 
 .x-mark.active,
 .o-mark.active {
@@ -199,6 +194,11 @@ body {
     background-color: var(--Light-Yellow-Hover);
 }
 
+.btn-vs-cpu:focus {
+    background-color: var(--Light-Yellow);
+    outline: 2px solid #aaa;
+    outline-offset: 4px;
+}
 
 
 .btn-vs-player {
@@ -209,6 +209,12 @@ body {
 
 .btn-vs-player:hover {
     background-color: var(--Light-Blue-Hover);
+}
+
+.btn-vs-player:focus {
+    background-color: var(--Light-Blue);
+    outline: 2px solid #aaa;
+    outline-offset: 4px;
 }
 
 
@@ -279,7 +285,11 @@ body {
     background-color: var(--Silver-Hover);
 }
 
-
+.btn-restart:focus {
+    background-color: var(--Silver);
+    outline: 2px solid var(--Light-Yellow);
+    outline-offset: 2px;
+}
 
 
 
@@ -314,8 +324,9 @@ body {
 }
 
 
-.field:focus-visible {
-    outline: 2px dashed var(--Silver);
+.field:focus {
+
+    outline: 2px solid #aaa;
     outline-offset: 4px;
 }
 
@@ -482,6 +493,12 @@ body {
     background-color: var(--Silver-Hover);
 }
 
+.btn-cancel:focus {
+    background-color: var(--Silver);
+    outline: 2px solid #aaa;
+    outline-offset: 4px;
+}
+
 .btn-confirm-restart {
     background-color: var(--Light-Yellow);
 
@@ -493,6 +510,11 @@ body {
     background-color: var(--Light-Yellow-Hover);
 }
 
+.btn-confirm-restart:focus {
+    background-color: var(--Light-Yellow);
+    outline: 2px solid #aaa;
+    outline-offset: 4px;
+}
 
 
 /* Overlay Win */
@@ -563,6 +585,12 @@ body {
     background-color: var(--Silver-Hover);
 }
 
+.btn-quit:focus {
+    background-color: var(--Silver);
+    outline: 2px solid #aaa;
+    outline-offset: 4px;
+}
+
 
 .btn-next-round {
     background-color: var(--Light-Yellow);
@@ -573,6 +601,12 @@ body {
 
 .btn-next-round:hover {
     background-color: var(--Light-Yellow-Hover);
+}
+
+.btn-next-round:focus {
+    background-color: var(--Light-Yellow);
+    outline: 2px solid #aaa;
+    outline-offset: 4px;
 }
 
 
