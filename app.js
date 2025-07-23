@@ -56,6 +56,48 @@ yellowScore.textContent = yellowPlayerCounter;
 
 
 
+// Trap focus on my page
+
+function trapFocusSimple(container) {
+    const focusable = container.querySelectorAll('button');
+    if (focusable.length === 0) return;
+
+    let first = focusable[0];
+    let last = focusable[focusable.length - 1];
+
+    function handleKey(e) {
+        if (e.key === 'Tab') {
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        } else if (e.key === 'Escape') {
+            if (container.id === "restart-confirm") {
+                closeRestartOverlay();
+            } else if (container.classList.contains("overlay-win")) {
+                closeWinOverlay();
+            }
+        }
+    }
+
+    container.addEventListener('keydown', handleKey);
+    first.focus();
+
+    return () => container.removeEventListener('keydown', handleKey);
+}
+
+
+
+
+
+
+
+
+
+
 btnX.addEventListener("click", () => {
     currentTurn = "x";
     markSelected = "x";
@@ -151,13 +193,18 @@ function updateScoreLabels() {
 
 
 // Restart
+let cleanupRestartTrap = null;
 
 restartBtn.addEventListener("click", () => {
     restartOverlay.classList.remove("hidden");
+    cleanupRestartTrap = trapFocusSimple(restartOverlay);
 });
+
 
 btnCancel.addEventListener("click", () => {
     restartOverlay.classList.add("hidden");
+    if (cleanupRestartTrap) cleanupRestartTrap();
+    restartBtn.focus(); // Return focus to trigger button
 });
 
 
@@ -313,23 +360,22 @@ function updateScore(winner) {
     }
 
 
-    // const greenPlayerCounter = 0;
-    // const tiesCounter = 0;
-    // const yellowPlayerCounter = 0;
-
-
-    // const greenScore = document.querySelector(".green-score");
-    // const tiesScore = document.querySelector(".ties-score");
-    // const yellowScore = document.querySelector(".yellow-score")
-
-
 }
 
+
+let cleanupWinTrap = null;
+
+function closeWinOverlay() {
+    winOverlay.style.display = "none";
+    if (cleanupWinTrap) cleanupWinTrap();
+    btnNextRound.focus(); // or btnQuit if that makes more sense
+}
 
 
 
 function showWinOverlay(winner) {
     winOverlay.style.display = "flex";
+    cleanupWinTrap = trapFocusSimple(winOverlay);
 
     const winMessage = document.querySelector(".win-message");
     const tieMessage = document.querySelector(".tie-message");
@@ -363,6 +409,7 @@ function showWinOverlay(winner) {
 
 function showTieOverlay() {
     winOverlay.style.display = "flex";
+    cleanupWinTrap = trapFocusSimple(winOverlay);
 
     const winMessage = document.querySelector(".win-message");
     const tieMessage = document.querySelector(".tie-message");
@@ -389,7 +436,10 @@ function quitGame() {
 };
 
 
-btnQuit.addEventListener("click", quitGame);
+btnQuit.addEventListener("click", () => {
+    closeWinOverlay();
+    quitGame();
+});
 
 
 
@@ -429,7 +479,10 @@ function nextRound() {
 };
 
 
-btnNextRound.addEventListener("click", nextRound);
+btnNextRound.addEventListener("click", () => {
+    closeWinOverlay();
+    nextRound();
+});
 
 
 // If user choses to play VS CPU
@@ -443,7 +496,6 @@ function cpuMove() {
     if (gameOver) return; // Prevent CPU from playing after game ends
 
 
-
     const cpuMark = getCpuMark();
     const cpuClass = cpuMark === "x" ? "marked-X" : "marked-O";
     const playerClass = markSelected === "x" ? "marked-X" : "marked-O";
@@ -451,11 +503,10 @@ function cpuMove() {
 
 
     // Here making AI CPU that would block the user from winning 3 fields or try winning itself
-
+    // FIRST: Try to win
     for (const combo of winCombos) {
 
         let cpuCount = 0;
-        let playerCount = 0;
         let emptyIndex = -1;
 
         for (let i = 0; i < 3; i++) {
@@ -464,24 +515,13 @@ function cpuMove() {
 
             if (cell.classList.contains(cpuClass)) {
                 cpuCount++;
-            } else if (cell.classList.contains(playerClass)) {
-                playerCount++;
             } else if (!cell.classList.contains("marked")) {
                 emptyIndex = index; //If it's empty, we remember that index (only one will be empty if someone is about to win or block).
-
             }
 
         }
-        //  Try to win
-        if (cpuCount === 2 && emptyIndex !== -1) {
-            fields[emptyIndex].classList.add("marked", cpuClass);
-            toggleTurn();
-            checkWin();
-            return;
-        }
 
-        // Try to block
-        if (playerCount === 2 && emptyIndex !== -1) {
+        if (cpuCount === 2 && emptyIndex !== -1) {
             fields[emptyIndex].classList.add("marked", cpuClass);
             toggleTurn();
             checkWin();
@@ -490,6 +530,31 @@ function cpuMove() {
 
     }
 
+    // SECOND: Try to block player
+    for (const combo of winCombos) {
+        let playerCount = 0;
+        let emptyIndex = -1;
+
+        for (let i = 0; i < 3; i++) {
+            const index = combo[i];
+            const cell = fields[index];
+
+            if (cell.classList.contains(playerClass)) {
+                playerCount++;
+            } else if (!cell.classList.contains("marked")) {
+                emptyIndex = index;
+            }
+        }
+
+        if (playerCount === 2 && emptyIndex !== -1) {
+            fields[emptyIndex].classList.add("marked", cpuClass);
+            toggleTurn();
+            checkWin();
+            return;
+        }
+    }
+
+    // THIRD: Pick a random field
     const availableFields = [...fields].filter((field) => !field.classList.contains("marked"));
     if (availableFields.length === 0) return;
 
@@ -517,5 +582,8 @@ fields.forEach(field => {
         }
     });
 });
+
+
+
 
 
